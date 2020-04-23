@@ -28,6 +28,7 @@ const IngredientForm = React.memo(props => {
   //   });
   // }
 
+  console.log('rendering ingredient form');
   return (
     <section className="ingredient-form">
       <Card>

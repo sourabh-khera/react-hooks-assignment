@@ -1,4 +1,4 @@
-import React, { useReducer, useCallback } from 'react';
+import React, { useReducer, useCallback, useMemo  } from 'react';
 
 import IngredientForm from './IngredientForm';
 import IngredientList from './IngredientList';
@@ -39,7 +39,7 @@ function Ingredients() {
     dispatch({type: 'SET', ingredients: filteredIngredients})
   }, [])
 
-  const addIngredientHandler = (ingredient) => {
+  const addIngredientHandler = useCallback((ingredient) => {
     dispatchHttpAction({type: 'SEND'});
     fetch('https://react-hooks-11ecf.firebaseio.com/ingredients.json', {
       method: 'POST',
@@ -56,8 +56,9 @@ function Ingredients() {
       .catch(error => {
         dispatchHttpAction({type: 'ERROR', error: 'Something went wrong!'})
       })
-  }
-  const onRemoveItem = (ingredientId) => {
+  }, []);
+
+  const onRemoveItem = useCallback((ingredientId) => {
     dispatchHttpAction({type: 'SEND'});
     fetch(`https://react-hooks-11ecf.firebaseio.com/ingredients/${ingredientId}.json`, {
       method: 'DELETE',
@@ -72,7 +73,8 @@ function Ingredients() {
       .catch(error => {
         dispatchHttpAction({type: 'ERROR', error: 'Something went wrong!'})
       })
-  }
+  }, []);
+
   const handleFilterError = useCallback(() => {
     dispatchHttpAction({type: 'ERROR', error: 'Something went wrong!'})
   }, []);
@@ -80,6 +82,11 @@ function Ingredients() {
   const clearError = () => {
     dispatchHttpAction({type: 'ERROR', error: null})
   }
+
+  const ingredientList = useMemo(()=>{
+    return  <IngredientList ingredients={userIngredients} onRemoveItem={onRemoveItem} />
+  }, [userIngredients, onRemoveItem]);
+  
   return (
     <div className="App">
       {httpState.error && <ErrorModel onClose={clearError}>{httpState.error}</ErrorModel>}
@@ -87,7 +94,7 @@ function Ingredients() {
 
       <section>
         <Search onLoadedIngredients={setFilteredIngredients} setFilterError={handleFilterError}/>
-        <IngredientList ingredients={userIngredients} onRemoveItem={onRemoveItem} />
+        {ingredientList}
         {/* Need to add list here! */}
       </section>
     </div>
