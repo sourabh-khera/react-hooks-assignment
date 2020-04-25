@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Card from '../UI/Card';
 import './Search.css';
 
-const Search = React.memo(props => {
+export const Search = (props => {
   const [enteredTitle, setEnteredTitle] = useState('');
   const inputRef = useRef();
   const { onLoadedIngredients, setFilterError } = props;
@@ -49,11 +49,11 @@ const Search = React.memo(props => {
       <Card>
         <div className="search-input">
           <label>Filter by Title</label>
-          <input type="text" ref={inputRef} value={enteredTitle} onChange={handleFilterInput} />
+          <input type="text" id='search' ref={inputRef} value={enteredTitle} onChange={handleFilterInput} />
         </div>
       </Card>
     </section>
   );
 });
 
-export default Search;
+export default React.memo(Search);
